@@ -9,19 +9,20 @@
    [clojurewerkz.quartzite.triggers :as qt]
    [com.stuartsierra.component :as component]))
 
-;; TODO: maybe a header (User-agent, etc.)
-;; TODO: set `x-aws-sqsd-taskname` and `x-aws-sqsd-path` headers
-;; TODO: probably want to uniquely handle `java.new.ConnectException`
-;; so we're not spewing massive backtraces for this common occurrence.
 (qj/defjob HTTPCronJob [ctx]
   (try
-    (let [url (get (qc/from-job-data ctx) "url")]
-      (log/infof "POST to '%s'" url)
-      (http/post url)
-      ;; TODO: consider logging HTTP status code, timing info?
-      )
+    (let [{:strs [name path url]} (qc/from-job-data ctx)]
+      (log/infof "POSTing to '%s'..." url)
+      (let [{:keys [request-time status]}
+            (http/post url {:headers            {"User-Agent"          "http-cron/0.1"
+                                                 "x-aws-sqsd-path"     path
+                                                 "x-aws-sqsd-taskname" name}
+                            :socket-timeout     10000
+                            :connection-timeout 10000
+                            :throw-exceptions   false})]
+        (log/infof "HTTP %d (%dms)" status request-time)))
     (catch Exception ex
-      (log/error ex))))
+      (log/error (.getMessage ex)))))
 
 (defn- job-key [group-name name]
   (qj/key (str "jobs.http-cron." name) group-name))
@@ -30,16 +31,18 @@
   (qt/key (str "triggers.http-cron." name) group-name))
 
 (defn- schedule-job [scheduler group-name base-uri {:keys [name schedule url]}]
-  (let [url  (cond->> url
-               (not (re-find #"^https?://" url))
-               (str base-uri))
-        job  (qj/build
-              (qj/of-type HTTPCronJob)
-              (qj/using-job-data {:url url})
-              (qj/with-identity (job-key group-name name)))
-        trig (qt/build
-              (qt/with-identity (trigger-key group-name name))
-              (qt/with-schedule (qcron/schedule (qcron/cron-schedule schedule))))]
+  (let [full-url (cond->> url
+                   (not (re-find #"^https?://" url))
+                   (str base-uri))
+        job      (qj/build
+                  (qj/of-type HTTPCronJob)
+                  (qj/using-job-data {:name name
+                                      :path url
+                                      :url  full-url})
+                  (qj/with-identity (job-key group-name name)))
+        trig     (qt/build
+                  (qt/with-identity (trigger-key group-name name))
+                  (qt/with-schedule (qcron/schedule (qcron/cron-schedule schedule))))]
     (qs/schedule scheduler job trig)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -63,7 +66,7 @@
         (assoc this :scheduler s))))
   (stop [this]
     (when scheduler
-      (qs/shutdown scheduler true))
+      (qs/shutdown scheduler))
     (assoc this :scheduler nil)))
 
 (defn make-http-cron [{:keys [base-uri job-specs] :as config}]
