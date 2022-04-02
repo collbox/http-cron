@@ -57,4 +57,22 @@
       <url>https://repo.clojars.org/</url>
     </repository>
   </repositories>
+  <distributionManagement>
+    <repository>
+      <id>clojars</id>
+      <name>Clojars repository</name>
+      <url>https://clojars.org/repo</url>
+    </repository>
+  </distributionManagement>
+  <description>POST to HTTP endpoints at regular intervals</description>
+  <url>https://github.com/collbox/http-cron</url>
+  <licenses>
+    <license>
+      <name>MIT</name>
+      <url>https://opensource.org/licenses/MIT</url>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://github.com/collbox/http-cron</url>
+  </scm>
 </project>
