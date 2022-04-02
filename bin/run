@@ -1,3 +1,3 @@
 #!/bin/sh
 
-clj -M -m collbox.http-cron.cli $*
+clojure -M -m collbox.http-cron.cli $*
