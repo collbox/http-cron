@@ -30,9 +30,9 @@ directly or via a containerization solution like [Docker][].
 | Env. Var.            | CLI Argument | Default                 | Description                                                 |
 |----------------------|--------------|-------------------------|-------------------------------------------------------------|
 | `HTTP_CRON_JOB_FILE` | `-f`         | `cron.yaml`             | File name for cron.yaml-style job specification             |
-| `HTTP_CRON_BASE_URI` | `-b`         | `http://localhost:8080` | Base URL to POST to                                         |
-| `HTTP_CRON_HOST`     |              | `localhost`             | Host to POST to (used if `HTTP_CRON_BASE_URI` not provided) |
-| `HTTP_CRON_PORT`     |              | `8080`                  | Port to POST to (used if `HTTP_CRON_BASE_URI` not provided) |
+| `HTTP_CRON_BASE_URL` | `-b`         | `http://localhost:8080` | Base URL to POST to                                         |
+| `HTTP_CRON_HOST`     |              | `localhost`             | Host to POST to (used if `HTTP_CRON_BASE_URL` not provided) |
+| `HTTP_CRON_PORT`     |              | `8080`                  | Port to POST to (used if `HTTP_CRON_BASE_URL` not provided) |
 
 ## Running as a Component in an Application
 
@@ -69,6 +69,22 @@ n.b. the value of `:schedule` should be a cron specifier string in
 [the format used by Quartz][quartz-cron-expressions], which differs
 slightly from the format supported in the `cron.yaml` file.
 
+# Dependency Information
+
+To add `http-cron` to your Clojure project, use one of the following:
+
+**Leiningen/Boot**
+
+```
+[co.collbox/http-cron "0.1.1"]
+```
+
+**Clojure CLI/deps.edn**
+
+```
+co.collbox/http-cron {:mvn/version "0.1.1"}
+```
+
 # Cron Job Configuration
 
 If you're using a `cron.yaml` file, it should be in the following
@@ -91,7 +107,7 @@ The fields of the cron specification are:
 
 You can also provide a full URL for `url`, rather than a URL fragment,
 and `http-cron` will use that URL, ignoring the value of
-`HTTP_CRON_BASE_URI`.
+`HTTP_CRON_BASE_URL`.
 
 # AWS Elastic Beanstalk Worker Compatibility
 

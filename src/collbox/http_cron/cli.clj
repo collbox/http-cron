@@ -20,7 +20,7 @@
     "Display usage instructions"]
    ["-b" "--base-uri BASE_URI"
     "Base URL to POST to"
-    :default (or (env-var "HTTP_CRON_BASE_URI")
+    :default (or (env-var "HTTP_CRON_BASE_URL")
                  (str "http://"
                       (or (env-var "HTTP_CRON_HOST") "localhost")
                       ":"
