@@ -4,7 +4,7 @@
   <packaging>jar</packaging>
   <groupId>co.collbox</groupId>
   <artifactId>http-cron</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
   <name>http-cron</name>
   <dependencies>
     <dependency>
