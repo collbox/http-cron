@@ -75,13 +75,13 @@ To add `http-cron` to your Clojure project, use one of the following:
 
 **Leiningen/Boot**
 
-```
+```clj
 [co.collbox/http-cron "0.2.0"]
 ```
 
 **Clojure CLI/deps.edn**
 
-```
+```clj
 co.collbox/http-cron {:mvn/version "0.2.0"}
 ```
 
@@ -90,7 +90,7 @@ co.collbox/http-cron {:mvn/version "0.2.0"}
 If you're using a `cron.yaml` file, it should be in the following
 format:
 
-```
+```yaml
 version: 1
 cron:
   - name: "brew-the-coffee"
