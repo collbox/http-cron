@@ -1,0 +1,57 @@
+#!/bin/bash
+
+set -eu
+
+if [ $# -ne 1 ]; then
+  echo "Usage: ${0} VERSION"
+  exit 1
+fi
+
+NEW_VERSION="${1}"
+
+if [[ `git status --porcelain --untracked-files=no` ]]; then
+  echo "Local modifications exist.  Aborting." >&2
+  exit 1
+fi
+
+set -x
+
+git checkout develop
+git pull
+git checkout master
+git pull
+git merge --no-ff --no-edit develop
+
+clj -Spom
+
+sed -i "" "s/^  <version>.*<\/version>/  <version>${NEW_VERSION}<\/version>/" pom.xml
+
+sed -i "" "s/\[co\.collbox\/http-cron \"[^\"]*\"\]/[co.collbox\/http-cron \"${NEW_VERSION}\"]/" README.md
+sed -i "" "s/co\.collbox\/http-cron {:mvn\/version \"[^\"]*\"}/co.collbox\/http-cron {:mvn\/version \"${NEW_VERSION}\"}/" README.md
+
+git add pom.xml README.md
+git commit -m "Version ${NEW_VERSION}"
+git tag "v${NEW_VERSION}"
+
+git show -p
+
+set +x
+
+while true; do
+    read -p "Deploy to maven? " yn
+    case $yn in
+        [Yy]* ) break;;
+        [Nn]* ) exit;;
+        * ) echo "Please answer 'y' or 'n'.";;
+    esac
+done
+
+set -x
+
+mvn deploy
+
+git push origin master
+git push origin "v${NEW_VERSION}"
+git checkout develop
+git merge master
+git push origin develop
