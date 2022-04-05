@@ -69,6 +69,22 @@ n.b. the value of `:schedule` should be a cron specifier string in
 [the format used by Quartz][quartz-cron-expressions], which differs
 slightly from the format supported in the `cron.yaml` file.
 
+# Dependency Information
+
+To add `http-cron` to your Clojure project, use one of the following:
+
+**Leiningen/Boot**
+
+```
+[co.collbox/http-cron "0.1.1"]
+```
+
+**Clojure CLI/deps.edn**
+
+```
+co.collbox/http-cron {:mvn/version "0.1.1"}
+```
+
 # Cron Job Configuration
 
 If you're using a `cron.yaml` file, it should be in the following
