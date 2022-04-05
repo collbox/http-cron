@@ -53,7 +53,7 @@ Here's an example of usage which reads the cron jobs from an AWS-style
 
 (defn app-system []
   (component/map->SystemMap
-   {:cron-http (hc/make-http-cron
+   {:http-cron (hc/make-http-cron
                 {:base-uri  "http://localhost:8080"
                  :job-specs (->> (hc.conv/parse-cron-yaml "cron.yaml")
                                  (remove (comp #{"backup"
