@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file.
 - Deprecate `bin/run` CLI.
 - Add new `clojure` (command)-based CLI.
 - Add ability to run as a Clojure tool.
+- Use `:base-url` rather than `:base-uri` in configuration map.  Old
+  keyword is still supported.
 
 ## 0.2.1 - 2022-04-07
 

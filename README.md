@@ -60,7 +60,7 @@ directly or via a containerization solution like [Docker][].
 easy to run it as part of a larger Clojure system.  The easiest way to
 build the component is using the
 `collbox.http-cron.core/make-http-cron` function, passing values for
-`:base-uri` and `:job-specs` in the configuration map.
+`:base-url` and `:job-specs` in the configuration map.
 
 Here's an example of usage which reads the cron jobs from an AWS-style
 `cron.yaml` file, ignoring some jobs (based on their name):
@@ -74,7 +74,7 @@ Here's an example of usage which reads the cron jobs from an AWS-style
 (defn app-system []
   (component/map->SystemMap
    {:http-cron (hc/make-http-cron
-                {:base-uri  "http://localhost:8080"
+                {:base-url  "http://localhost:8080"
                  :job-specs (->> (hc.conv/parse-cron-yaml "cron.yaml")
                                  (remove (comp #{"backup"
                                                  "data-lake-export"}

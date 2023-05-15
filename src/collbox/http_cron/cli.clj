@@ -77,7 +77,7 @@
                                 (count job-specs)
                                 file
                                 base-url))
-            hc        (-> {:base-uri  base-url
+            hc        (-> {:base-url  base-url
                            :job-specs job-specs}
                           core/make-http-cron
                           component/start)]
