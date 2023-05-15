@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 0.3.0 - 2023-05-15
+
 - Deprecate `bin/run` CLI.
 - Add new `clojure` (command)-based CLI.
 - Add ability to run as a Clojure tool.
