@@ -8,8 +8,9 @@ if [ $# -ne 1 ]; then
 fi
 
 NEW_VERSION="${1}"
+DATE=$(date -Idate)
 
-if [[ `git status --porcelain --untracked-files=no` ]]; then
+if [[ $(git status --porcelain --untracked-files=no) ]]; then
   echo "Local modifications exist.  Aborting." >&2
   exit 1
 fi
@@ -25,13 +26,14 @@ git merge --no-ff --no-edit develop
 sed -i "" "s/(def version \"[^\"]*\")/(def version \"${NEW_VERSION}\")/" build.clj
 sed -i "" "s/\[co\.collbox\/http-cron \"[^\"]*\"\]/[co.collbox\/http-cron \"${NEW_VERSION}\"]/" README.md
 sed -i "" "s/co\.collbox\/http-cron {:mvn\/version \"[^\"]*\"}/co.collbox\/http-cron {:mvn\/version \"${NEW_VERSION}\"}/" README.md
+sed -i "" "s/^## Unreleased$/## Unreleased\\n\\n## ${NEW_VERSION} - ${DATE}/" CHANGELOG.md
 
 clj -T:build clean
 clj -T:build jar
 
-git add build.clj pom.xml README.md
+git add build.clj pom.xml README.md CHANGELOG.md
 git commit -m "Version ${NEW_VERSION}"
-git tag "v${NEW_VERSION}"
+git tag -a "v${NEW_VERSION}" -m "Release ${NEW_VERSION}"
 
 git show -p
 
