@@ -8,7 +8,7 @@
 ;;
 ;; - It expects a leading 'seconds' field.
 ;; - Both day-of-month and day-of-week cannot be "*"--one must be a
-;;   "?".  Ridiculus.
+;;   "?".  Ridiculous.
 ;; - Specifying a day-of-week and "*" for day-of-month throws error
 ;;   that both cannot be provided.
 (defn- translate-cron-expression [ce]

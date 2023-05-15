@@ -1,11 +1,13 @@
-{:deps    {clj-commons/clj-yaml           {:mvn/version "1.0.26"}
-           clj-http/clj-http              {:mvn/version "3.12.3"}
-           clojurewerkz/quartzite         {:mvn/version "2.1.0"}
-           com.stuartsierra/component     {:mvn/version "1.1.0"}
-           ch.qos.logback/logback-classic {:mvn/version "1.4.7"}
-           org.clojure/tools.cli          {:mvn/version "1.0.219"}
-           org.clojure/tools.logging      {:mvn/version "1.2.4"}}
- :paths   ["src"]
- :aliases {:build {:deps       {io.github.clojure/tools.build {:git/tag "v0.9.4", :git/sha "76b78fe"}
-                                slipset/deps-deploy           {:mvn/version "RELEASE"}}
-                   :ns-default build}}}
+{:deps        {clj-commons/clj-yaml           {:mvn/version "1.0.26"}
+               clj-http/clj-http              {:mvn/version "3.12.3"}
+               clojurewerkz/quartzite         {:mvn/version "2.1.0"}
+               com.stuartsierra/component     {:mvn/version "1.1.0"}
+               ch.qos.logback/logback-classic {:mvn/version "1.4.7"}
+               org.clojure/tools.cli          {:mvn/version "1.0.219"}
+               org.clojure/tools.logging      {:mvn/version "1.2.4"}}
+ :paths       ["src"]
+ :aliases     {:build {:deps       {io.github.clojure/tools.build {:git/tag "v0.9.4", :git/sha "76b78fe"}
+                                    slipset/deps-deploy           {:mvn/version "RELEASE"}}
+                       :ns-default build}
+               :run   {:exec-fn collbox.http-cron.cli/run}}
+ :tools/usage {:ns-default collbox.http-cron.cli}}
