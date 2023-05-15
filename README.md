@@ -23,13 +23,13 @@ downloading the source code.
 First, install it as a tool:
 
 ```sh
-clojure -Ttools install-latest :lib co.collbox/http-cron :as http-cron
+clojure -Ttools install-latest :lib com.github.collbox/http-cron :as http-cron
 ```
 
 Then run it with:
 
 ```sh
-clojure -Thttp-cron :file cron.yaml
+clojure -Thttp-cron run :file cron.yaml
 ```
 
 If you *do* have the code downloaded and want to run the application
