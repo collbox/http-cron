@@ -17,7 +17,27 @@ in a Clojure / Java application.
 
 Clojure (`clojure`) needs to be installed and available on the `PATH`.
 
-Run the application by invoking the `bin/run` script.
+You can run the application as a [Clojure tool][clj-tool] without
+downloading the source code.
+
+First, install it as a tool:
+
+```sh
+clojure -Ttools install-latest :lib co.collbox/http-cron :as http-cron
+```
+
+Then run it with:
+
+```sh
+clojure -Thttp-cron :file cron.yaml
+```
+
+If you *do* have the code downloaded and want to run the application
+directly from that codebase you can instead use:
+
+```sh
+clojure -X:run :file cron.yaml
+```
 
 In standalone mode, tasks are configured with a `cron.yaml` file.  By
 default, `http-cron` will look for a file with this name in the
@@ -29,10 +49,10 @@ directly or via a containerization solution like [Docker][].
 
 | Env. Var.            | CLI Argument | Default                 | Description                                                 |
 |----------------------|--------------|-------------------------|-------------------------------------------------------------|
-| `HTTP_CRON_JOB_FILE` | `-f`         | `cron.yaml`             | File name for cron.yaml-style job specification             |
-| `HTTP_CRON_BASE_URL` | `-b`         | `http://localhost:8080` | Base URL to POST to                                         |
-| `HTTP_CRON_HOST`     |              | `localhost`             | Host to POST to (used if `HTTP_CRON_BASE_URL` not provided) |
-| `HTTP_CRON_PORT`     |              | `8080`                  | Port to POST to (used if `HTTP_CRON_BASE_URL` not provided) |
+| `HTTP_CRON_JOB_FILE` | `:file`      | `cron.yaml`             | File name for cron.yaml-style job specification             |
+| `HTTP_CRON_BASE_URL` | `:base-url`  | `http://localhost:8080` | Base URL to POST to                                         |
+| `HTTP_CRON_HOST`     | `:host`      | `localhost`             | Host to POST to (used if `HTTP_CRON_BASE_URL` not provided) |
+| `HTTP_CRON_PORT`     | `:port`      | `8080`                  | Port to POST to (used if `HTTP_CRON_BASE_URL` not provided) |
 
 ## Running as a Component in an Application
 
@@ -40,7 +60,7 @@ directly or via a containerization solution like [Docker][].
 easy to run it as part of a larger Clojure system.  The easiest way to
 build the component is using the
 `collbox.http-cron.core/make-http-cron` function, passing values for
-`:base-uri` and `:job-specs` in the configuration map.
+`:base-url` and `:job-specs` in the configuration map.
 
 Here's an example of usage which reads the cron jobs from an AWS-style
 `cron.yaml` file, ignoring some jobs (based on their name):
@@ -54,7 +74,7 @@ Here's an example of usage which reads the cron jobs from an AWS-style
 (defn app-system []
   (component/map->SystemMap
    {:http-cron (hc/make-http-cron
-                {:base-uri  "http://localhost:8080"
+                {:base-url  "http://localhost:8080"
                  :job-specs (->> (hc.conv/parse-cron-yaml "cron.yaml")
                                  (remove (comp #{"backup"
                                                  "data-lake-export"}
@@ -126,10 +146,11 @@ are welcome.
 
 # License
 
-Copyright © 2022 Collbox Inc.
+Copyright © 2023 Collbox Inc.
 
 Distributed under the MIT License.
 
+[clj-tool]: https://clojure.org/reference/deps_and_cli#_tool_usage
 [component]: https://github.com/stuartsierra/component
 [docker]: https://www.docker.com
 [quartz-cron-expressions]: http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html

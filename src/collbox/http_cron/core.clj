@@ -30,10 +30,10 @@
 (defn- trigger-key [group-name name]
   (qt/key (str "triggers.http-cron." name) group-name))
 
-(defn- schedule-job [scheduler group-name base-uri {:keys [name schedule url]}]
+(defn- schedule-job [scheduler group-name base-url {:keys [name schedule url]}]
   (let [full-url (cond->> url
                    (not (re-find #"^https?://" url))
-                   (str base-uri))
+                   (str base-url))
         job      (qj/build
                   (qj/of-type HTTPCronJob)
                   (qj/using-job-data {:name name
@@ -49,7 +49,7 @@
 ;;; Public
 
 (defrecord HTTPCron [;; params
-                     base-uri
+                     base-url
                      job-specs
                      ;; state
                      scheduler]
@@ -61,7 +61,7 @@
             group-name (Integer/toHexString (System/identityHashCode this))]
         (doseq [js job-specs]
           (log/infof "Scheduling '%s' for [%s]" (:name js) (:schedule js))
-          (schedule-job s group-name base-uri js))
+          (schedule-job s group-name base-url js))
         (qs/start s)
         (assoc this :scheduler s))))
   (stop [this]
@@ -69,6 +69,8 @@
       (qs/shutdown scheduler))
     (assoc this :scheduler nil)))
 
-(defn make-http-cron [{:keys [base-uri job-specs] :as config}]
-  ;; TODO: validate data
-  (map->HTTPCron config))
+(defn make-http-cron [{:keys [base-url job-specs] :as config}]
+  (let [config (cond-> config
+                 (nil? base-url)
+                 (assoc :base-url (:base-uri config)))] ; support old name
+    (map->HTTPCron config)))
